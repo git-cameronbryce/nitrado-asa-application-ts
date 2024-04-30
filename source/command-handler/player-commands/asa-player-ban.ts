@@ -1,6 +1,6 @@
-import type { InteractionInput, ServiceResponse, GameserverResponse } from '../../modules/interfaces';
+import type { InteractionInput, ServiceResponse, PlayerResponse, GameserverResponse } from '../../modules/interfaces';
+import { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import type { SlashCommandProps, CommandOptions } from 'commandkit';
-import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import { nitrado } from '../../other/config.json';
 import axios, { AxiosResponse } from 'axios';
 
@@ -13,6 +13,7 @@ export const data = new SlashCommandBuilder()
 
 export async function run({ interaction, client, handler }: SlashCommandProps) {
   await interaction.deferReply({ ephemeral: false });
+  const start: number = performance.now();
 
   const platforms: string[] = ['arksa'];
 
@@ -22,12 +23,32 @@ export async function run({ interaction, client, handler }: SlashCommandProps) {
     admin: interaction.user.id,
   };
 
+  let total: number = 0;
+  let output: PlayerResponse[] = [];
+  const action = async (service: { id: number }) => {
+    try {
+      const url: string = `https://api.nitrado.net/services/${service.id}/gameservers/games/banlist`;
+      const response: AxiosResponse<PlayerResponse> = await axios.post(url, { identifier: input.username }, { headers: { 'Authorization': nitrado.token } });
+      if (response.status === 200) { output.push(response.data) };
+    } catch (error) { null };
+  };
+
   const gameserver = async (services: ServiceResponse) => {
     const tasks = services.data.services.map(async service => {
       const url: string = `https://api.nitrado.net/services/${service.id}/gameservers`;
       const response: AxiosResponse<GameserverResponse> = await axios.get(url, { headers: { 'Authorization': nitrado.token } });
-      console.log(response.data.data.gameserver.query.server_name)
+      if (response.status === 200 && platforms.includes(service.details.folder_short)) { await action(service), total++ };
     });
+
+    await Promise.all(tasks);
+
+    const embed = new EmbedBuilder()
+      .setDescription(`**Game Command Success**\nGameserver action completed.\nExecuted on \`${output.length}\` of \`${total}\` servers.\nRemoved for ${input.reason}.`)
+      .setThumbnail('https://i.imgur.com/CzGfRzv.png')
+      .setFooter({ text: `Response: ${(performance.now() - start).toFixed(2)}ms`, iconURL: 'https://i.imgur.com/NK0ZePZ.png' })
+      .setColor('#2ecc71')
+
+    await interaction.followUp({ embeds: [embed] });
   };
 
   const service = async () => {

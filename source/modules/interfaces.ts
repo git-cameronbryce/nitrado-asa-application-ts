@@ -6,10 +6,10 @@ export interface GameserverResponse {
         server_name: string;
         player_current: number;
         player_max: number;
-      }
-    }
-  }
-}
+      };
+    };
+  };
+};
 
 export interface ServiceResponse {
   data: {
@@ -24,8 +24,17 @@ export interface ServiceResponse {
   };
 };
 
+export interface PlayerResponse {
+  data: {
+    message: string;
+    data: {
+      identifier: string[];
+    };
+  };
+};
+
 export interface InteractionInput {
   username: string | null;
   reason: string | null;
   admin: string;
-}
+};
