@@ -1,11 +1,12 @@
 import { discord } from './other/config.json'
 import { Client, GatewayIntentBits } from 'discord.js';
 import { CommandKit } from 'commandkit';
-import path from 'path';
 
+import path from 'path';
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
 });
+
 
 new CommandKit({
   client,
@@ -14,5 +15,6 @@ new CommandKit({
   devGuildIds: ['1219480518131716126'],
   bulkRegister: true
 });
+
 
 client.login(discord.token);
