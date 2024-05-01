@@ -3,5 +3,18 @@
     "axios": "^1.6.8",
     "commandkit": "^0.1.10",
     "discord.js": "^14.14.1"
-  }
+  },
+  "name": "nitrado-asa-application-ts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "build": "tsc --watch",
+    "start": "node --watch dist/script.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
