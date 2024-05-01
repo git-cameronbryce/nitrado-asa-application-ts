@@ -67,6 +67,7 @@ export async function run({ interaction, client, handler }: SlashCommandProps) {
 };
 
 // Testing 
+// feature-testing
 export const options: CommandOptions = {
   userPermissions: ['Administrator'],
 };
