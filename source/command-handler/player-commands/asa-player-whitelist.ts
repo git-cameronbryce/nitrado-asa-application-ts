@@ -1,4 +1,4 @@
-import type { InteractionInput, ServiceResponse, PlayerResponse, GameserverResponse } from '../../modules/interfaces';
+import type { ServiceResponse, PlayerResponse, GameserverResponse } from '../../modules/interfaces';
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import type { SlashCommandProps, CommandOptions } from 'commandkit';
 import { nitrado } from '../../other/config.json';
@@ -15,9 +15,13 @@ export async function run({ interaction, client, handler }: SlashCommandProps) {
 
   const platforms: string[] = ['arksa'];
 
+  interface InteractionInput {
+    username: string | null;
+    admin: string;
+  };
+
   const input: InteractionInput = {
     username: interaction.options.getString('username'),
-    reason: interaction.options.getString('reason'),
     admin: interaction.user.id,
   };
 
@@ -41,7 +45,7 @@ export async function run({ interaction, client, handler }: SlashCommandProps) {
     await Promise.all(tasks);
 
     const embed = new EmbedBuilder()
-      .setDescription(`**Game Command Success**\nGameserver action completed.\nExecuted on \`${output.length}\` of \`${total}\` servers.\nRemoved for ${input.reason}.`)
+      .setDescription(`**Game Command Success**\nGameserver action completed.\nExecuted on \`${output.length}\` of \`${total}\` servers.`)
       .setThumbnail('https://i.imgur.com/CzGfRzv.png')
       .setFooter({ text: `Response: ${(performance.now() - start).toFixed(2)}ms`, iconURL: 'https://i.imgur.com/NK0ZePZ.png' })
       .setColor('#2ecc71')

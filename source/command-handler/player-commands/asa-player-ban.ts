@@ -1,4 +1,4 @@
-import type { InteractionInput, ServiceResponse, PlayerResponse, GameserverResponse } from '../../modules/interfaces';
+import type { ServiceResponse, PlayerResponse, GameserverResponse } from '../../modules/interfaces';
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import type { SlashCommandProps, CommandOptions } from 'commandkit';
 import { nitrado } from '../../other/config.json';
@@ -16,6 +16,12 @@ export async function run({ interaction, client, handler }: SlashCommandProps) {
   const start: number = performance.now();
 
   const platforms: string[] = ['arksa'];
+
+  interface InteractionInput {
+    username: string | null;
+    reason: string | null;
+    admin: string;
+  };
 
   const input: InteractionInput = {
     username: interaction.options.getString('username'),
