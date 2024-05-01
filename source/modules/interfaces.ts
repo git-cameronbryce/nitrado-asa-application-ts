@@ -32,9 +32,3 @@ export interface PlayerResponse {
     };
   };
 };
-
-export interface InteractionInput {
-  username: string | null;
-  reason: string | null;
-  admin: string;
-};

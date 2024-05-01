@@ -5,11 +5,9 @@ import { nitrado } from '../../other/config.json';
 import axios, { AxiosResponse } from 'axios';
 
 export const data = new SlashCommandBuilder()
-  .setName('asa-player-ban')
+  .setName('asa-player-unwhitelist')
   .setDescription('Performs an in-game player action.')
   .addStringOption(option => option.setName('username').setDescription('Selected action will be performed on given tag.').setRequired(true))
-  .addStringOption(option => option.setName('reason').setDescription('Required to submit ban action.').setRequired(true)
-    .addChoices({ name: 'Breaking Rules', value: 'breaking rules' }, { name: 'Cheating', value: 'cheating' }, { name: 'Behavior', value: 'behavior' }, { name: 'Meshing', value: 'meshing' }, { name: 'Other', value: 'other reasons' }))
 
 export async function run({ interaction, client, handler }: SlashCommandProps) {
   await interaction.deferReply({ ephemeral: false });
@@ -19,13 +17,11 @@ export async function run({ interaction, client, handler }: SlashCommandProps) {
 
   interface InteractionInput {
     username: string | null;
-    reason: string | null;
     admin: string;
   };
 
   const input: InteractionInput = {
     username: interaction.options.getString('username'),
-    reason: interaction.options.getString('reason'),
     admin: interaction.user.id,
   };
 
@@ -33,8 +29,8 @@ export async function run({ interaction, client, handler }: SlashCommandProps) {
   let output: PlayerResponse[] = [];
   const action = async (service: { id: number }) => {
     try {
-      const url: string = `https://api.nitrado.net/services/${service.id}/gameservers/games/banlist`;
-      const response: AxiosResponse<PlayerResponse> = await axios.post(url, { identifier: input.username }, { headers: { 'Authorization': nitrado.token } });
+      const url: string = `https://api.nitrado.net/services/${service.id}/gameservers/games/whitelist`;
+      const response: AxiosResponse<PlayerResponse> = await axios.delete(url, { headers: { 'Authorization': nitrado.token }, data: { identifier: input.username } });
       if (response.status === 200) { output.push(response.data) };
     } catch (error) { console.log(error) };
   };
@@ -43,13 +39,13 @@ export async function run({ interaction, client, handler }: SlashCommandProps) {
     const tasks = services.data.services.map(async service => {
       const url: string = `https://api.nitrado.net/services/${service.id}/gameservers`;
       const response: AxiosResponse<GameserverResponse> = await axios.get(url, { headers: { 'Authorization': nitrado.token } });
-      if (response.status === 200 && platforms.includes(service.details.folder_short)) { await action(service), total++ };
+      if (response.status === 200 && platforms.includes(service.details.folder_short)) { (await action(service), total++) };
     });
 
     await Promise.all(tasks);
 
     const embed = new EmbedBuilder()
-      .setDescription(`**Game Command Success**\nGameserver action completed.\nExecuted on \`${output.length}\` of \`${total}\` servers.\nRemoved for ${input.reason}.`)
+      .setDescription(`**Game Command Success**\nGameserver action completed.\nExecuted on \`${output.length}\` of \`${total}\` servers.`)
       .setThumbnail('https://i.imgur.com/CzGfRzv.png')
       .setFooter({ text: `Response: ${(performance.now() - start).toFixed(2)}ms`, iconURL: 'https://i.imgur.com/NK0ZePZ.png' })
       .setColor('#2ecc71')
