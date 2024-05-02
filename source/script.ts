@@ -16,5 +16,4 @@ new CommandKit({
   bulkRegister: true
 });
 
-
-client.login(discord.token);
+client.login(discord.token).then(() => console.log('Client logged in...'))
