@@ -9,9 +9,8 @@
   "main": "index.js",
   "devDependencies": {},
   "scripts": {
-    "build": "tsc --watch",
-    "start": "node --watch dist/script.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "development": "node --watch dist/script.js",
+    "build": "tsc --watch"
   },
   "keywords": [],
   "author": "",
