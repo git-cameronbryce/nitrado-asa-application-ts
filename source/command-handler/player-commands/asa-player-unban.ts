@@ -11,8 +11,6 @@ export const data = new SlashCommandBuilder()
 
 export async function run({ interaction, client, handler }: SlashCommandProps) {
   await interaction.deferReply({ ephemeral: false });
-  const start: number = performance.now();
-
   const platforms: string[] = ['arksa'];
 
   interface InteractionInput {
