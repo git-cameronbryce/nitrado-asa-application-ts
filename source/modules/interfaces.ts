@@ -6,7 +6,7 @@ export interface GameserverResponse {
         server_name: string;
         player_current: number;
         player_max: number;
-      };
+      }
     };
   };
 };
@@ -32,3 +32,13 @@ export interface PlayerResponse {
     };
   };
 };
+
+export interface TokenResponse {
+  data: {
+    token: {
+      id: number,
+      expires_at: number;
+      scopes: string[]
+    };
+  };
+}

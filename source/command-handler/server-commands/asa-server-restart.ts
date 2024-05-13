@@ -1,4 +1,4 @@
-import type { ServiceResponse, PlayerResponse } from '../../modules/interfaces';
+import type { ServiceResponse } from '../../modules/interfaces';
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import type { SlashCommandProps, CommandOptions } from 'commandkit';
 import { nitrado } from '../../other/config.json';
@@ -11,8 +11,6 @@ export const data = new SlashCommandBuilder()
 
 export async function run({ interaction, client, handler }: SlashCommandProps) {
   await interaction.deferReply({ ephemeral: false });
-  const start: number = performance.now();
-
   const platforms: string[] = ['arksa'];
 
   interface InteractionInput {
@@ -30,13 +28,17 @@ export async function run({ interaction, client, handler }: SlashCommandProps) {
     admin: interaction.user.id
   };
 
+  const successful = async () => {
+
+  };
+
   const gameserver = async () => {
     try {
       const url: string = `https://api.nitrado.net/services/${input.identifier}/gameservers/restart`;
       const response: AxiosResponse<GameserverRestart> = await axios.post(url, { identifier: input.identifier }, { headers: { 'Authorization': nitrado.token } });
-      if (response.status !== 200) { return console.log('Invalid') };
+      if (response.status === 200) { await successful() };
     } catch (error: any) {
-      console.log(error.response)
+      if (error.response.data.message === "This service doesn't belong to you!") { console.log('Does not belong to you.') };
     };
   };
 

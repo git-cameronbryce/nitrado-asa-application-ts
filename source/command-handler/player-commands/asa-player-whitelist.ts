@@ -49,7 +49,6 @@ export async function run({ interaction, client, handler }: SlashCommandProps) {
     const embed = new EmbedBuilder()
       .setDescription(`**Game Command Success**\nGameserver action completed.\nExecuted on \`${success}\` of \`${total}\` servers.`)
       .setThumbnail('https://i.imgur.com/CzGfRzv.png')
-      .setFooter({ text: `Nitrado Outage: x${outage} Servers`, iconURL: 'https://i.imgur.com/NK0ZePZ.png' })
       .setColor('#2ecc71')
 
     await interaction.followUp({ embeds: [embed] });
